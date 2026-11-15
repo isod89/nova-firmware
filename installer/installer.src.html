@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA Installer</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,__FAVICON__">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070912; --bg2: #0E1328; --card: rgba(22, 28, 54, .72); --card2: rgba(32, 40, 74, .7); --line: rgba(140, 150, 210, .16);
+  --text: #F2F4FF; --dim: #8A93B5; --faint: #5A6286; --accent: #7C6CFF; --cyan: #5EE7FF; --pink: #E879F9;
+  --good: #3DDC97; --warn: #FFB547; --bad: #FF5C7A;
+  --grad: linear-gradient(135deg, #5EE7FF 0%, #7C6CFF 52%, #E879F9 100%);
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { font: 15px/1.5 var(--font); color: var(--text); background: radial-gradient(1200px 700px at 50% -10%, #1B2250 0%, var(--bg) 60%) fixed, var(--bg); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; }
+a { color: var(--cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 28px 22px 40px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo svg { width: 44px; height: 44px; filter: drop-shadow(0 6px 18px rgba(124, 108, 255, .35)); }
+.logo b { font-size: 22px; letter-spacing: .18em; font-weight: 700; }
+.logo span { display: block; font-size: 11px; letter-spacing: .22em; color: var(--dim); font-weight: 600; margin-top: -2px; }
+.ver { font-size: 13px; color: var(--dim); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.03); }
+.hero { text-align: center; margin: 10px auto 28px; max-width: 680px; }
+.hero h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; letter-spacing: -.02em; }
+.hero h1 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { color: var(--dim); margin: 0; font-size: 16px; }
+.panel { display: grid; grid-template-columns: 260px 1fr; gap: 0; background: var(--card); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; backdrop-filter: blur(18px); box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.steps { padding: 26px 18px; border-right: 1px solid var(--line); background: rgba(10, 13, 26, .45); }
+.step { display: flex; gap: 12px; align-items: center; padding: 11px 12px; border-radius: 12px; color: var(--faint); font-weight: 600; font-size: 14px; }
+.step i { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 13px; border: 1.5px solid var(--line); flex: none; }
+.step.now { color: var(--text); background: var(--card2); }
+.step.now i { border-color: transparent; background: var(--grad); color: #0A0D1A; }
+.step.done { color: var(--dim); }
+.step.done i { border-color: var(--good); color: var(--good); }
+.body { padding: 34px 38px 32px; min-height: 430px; display: flex; flex-direction: column; }
+.body h2 { margin: 0 0 6px; font-size: 24px; letter-spacing: -.01em; }
+.lead { color: var(--dim); margin: 0 0 22px; }
+.list { margin: 0 0 22px; padding: 0; list-style: none; display: grid; gap: 10px; }
+.list li { position: relative; padding-left: 22px; color: #C9CEE6; }
+.list li::before { content: ""; position: absolute; left: 2px; top: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--grad); }
+.actions { margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.btn { height: 48px; padding: 0 24px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.04); font-weight: 600; cursor: pointer; transition: transform .12s ease, background .2s, box-shadow .2s; }
+.btn:hover { background: rgba(255,255,255,.08); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { border: 0; background: var(--grad); color: #0A0D1A; box-shadow: 0 10px 30px rgba(124, 108, 255, .35); }
+.btn.primary:hover { box-shadow: 0 14px 36px rgba(124, 108, 255, .5); }
+.btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.link { background: none; border: 0; color: var(--dim); cursor: pointer; padding: 6px 4px; font-size: 14px; }
+.link:hover { color: var(--text); }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 0 22px; }
+.fact { border: 1px solid var(--line); background: rgba(255,255,255,.025); border-radius: 14px; padding: 14px 16px; }
+.fact small { display: block; color: var(--dim); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
+.fact b { font-size: 17px; font-weight: 600; }
+.choice { display: grid; gap: 12px; margin: 0 0 22px; }
+.opt { display: flex; gap: 14px; align-items: flex-start; border: 1.5px solid var(--line); border-radius: 16px; padding: 16px 18px; cursor: pointer; background: rgba(255,255,255,.02); transition: border-color .2s, background .2s; }
+.opt:hover { background: rgba(255,255,255,.04); }
+.opt input { margin-top: 4px; accent-color: #7C6CFF; width: 18px; height: 18px; }
+.opt b { display: block; font-size: 16px; }
+.opt span { color: var(--dim); font-size: 14px; }
+.opt.sel { border-color: #7C6CFF; background: rgba(124, 108, 255, .08); }
+.opt.off { opacity: .45; cursor: not-allowed; }
+.ring { position: relative; width: 168px; height: 168px; margin: 8px auto 18px; }
+.ring svg { transform: rotate(-90deg); }
+.ring .pct { position: absolute; inset: 0; display: grid; place-items: center; font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stage { text-align: center; color: var(--dim); min-height: 24px; }
+.note { border-radius: 14px; padding: 14px 16px; font-size: 14px; margin: 0 0 18px; border: 1px solid var(--line); background: rgba(255,255,255,.03); color: #C9CEE6; }
+.note.warn { border-color: rgba(255, 181, 71, .35); background: rgba(255, 181, 71, .07); }
+.note.bad { border-color: rgba(255, 92, 122, .4); background: rgba(255, 92, 122, .08); }
+.restart { display: flex; gap: 14px; align-items: flex-start; border-radius: 16px; padding: 16px 18px; margin: 0 0 20px; border: 1px solid rgba(94, 231, 255, .35); background: linear-gradient(135deg, rgba(94, 231, 255, .10), rgba(124, 108, 255, .10)); }
+.restart svg { flex: none; margin-top: 2px; }
+.restart b { display: block; font-size: 16px; margin-bottom: 2px; }
+.restart span { color: #C9CEE6; font-size: 14px; }
+.note.good { border-color: rgba(61, 220, 151, .35); background: rgba(61, 220, 151, .07); }
+.done-mark { width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; margin: 4px 0 18px; background: rgba(61, 220, 151, .12); border: 1.5px solid rgba(61, 220, 151, .5); }
+details.adv { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--dim); }
+details.adv summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+details.adv .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+.log { margin-top: 14px; max-height: 140px; overflow: auto; font: 12px/1.5 ui-monospace, "SF Mono", Consolas, monospace; color: var(--faint); white-space: pre-wrap; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: rgba(0,0,0,.25); }
+.cards3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.mini { border: 1px solid var(--line); border-radius: 18px; padding: 18px; background: rgba(22, 28, 54, .5); }
+.mini b { display: block; margin-bottom: 4px; }
+.mini span { color: var(--dim); font-size: 14px; }
+footer { text-align: center; color: var(--faint); font-size: 13px; margin-top: 30px; }
+.unsupported { text-align: center; padding: 40px 20px; }
+@media (max-width: 820px) {
+  .panel { grid-template-columns: 1fr; }
+  .steps { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 12px; }
+  .step span { display: none; }
+  .body { padding: 26px 22px; }
+  .facts, .cards3 { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">__LOGO_SVG__<div><b>NOVA</b><span>INSTALLER</span></div></div>
+    <div class="ver">Firmware __VERSION__</div>
+  </header>
+
+  <div class="hero">
+    <h1>Install <em>NOVA</em> on your ATS Mini</h1>
+    <p>A complete, open source firmware for the ATS Mini receiver (ESP32-S3 + SI4732). Installs in about a minute, right from this page.</p>
+  </div>
+
+  <div class="panel" id="panel">
+    <nav class="steps" aria-label="Steps">
+      <div class="step now" data-s="1"><i>1</i><span>Connect</span></div>
+      <div class="step" data-s="2"><i>2</i><span>Your radio</span></div>
+      <div class="step" data-s="3"><i>3</i><span>Back up</span></div>
+      <div class="step" data-s="4"><i>4</i><span>Install</span></div>
+      <div class="step" data-s="5"><i>5</i><span>Done</span></div>
+    </nav>
+
+    <section class="body" id="s1">
+      <h2>Connect your radio</h2>
+      <p class="lead">Everything happens in this browser, over USB. Nothing is uploaded anywhere.</p>
+      <ul class="list">
+        <li>Switch the radio on and plug it into this computer with a USB data cable (some cables only charge).</li>
+        <li>Use Chrome, Edge or Opera on a computer. Close the NOVA Editor and any other program that uses the radio.</li>
+        <li>When asked, pick the port named <b>USB JTAG/serial debug unit</b> or <b>ESP32-S3</b>.</li>
+      </ul>
+      <div class="note bad" id="noSerial" hidden>This browser cannot talk to USB devices. Open this page in Chrome, Edge or Opera on a Windows, macOS, Linux or ChromeOS computer.</div>
+      <div class="note warn" id="connErr" hidden></div>
+      <div class="actions">
+        <button class="btn primary" id="btnConnect" type="button">Connect radio</button>
+        <button class="link" id="btnHelpBoot" type="button">The radio is not found?</button>
+      </div>
+      <div class="note" id="helpBoot" hidden style="margin-top:16px">Force the radio into install mode: switch it off, hold the <b>BOOT</b> button (on the board, or the knob on some models), plug the cable in or switch it on, then release BOOT and click Connect again. The screen stays dark in this mode; that is normal.</div>
+    </section>
+
+    <section class="body" id="s2" hidden>
+      <h2>Your radio</h2>
+      <p class="lead">Read from the radio itself. NOVA comes in two builds, one for each memory type.</p>
+      <div class="facts">
+        <div class="fact"><small>Processor</small><b id="fChip">-</b></div>
+        <div class="fact"><small>Flash memory</small><b id="fFlash">-</b></div>
+        <div class="fact"><small>Extra memory (PSRAM)</small><b id="fPsram">-</b></div>
+        <div class="fact"><small>Running now</small><b id="fNow">-</b></div>
+      </div>
+      <div class="note" id="variantNote"></div>
+      <div class="actions">
+        <button class="btn primary" id="btnToBackup" type="button">Continue</button>
+        <label class="link" style="display:flex;gap:8px;align-items:center">Build
+          <select id="variantSel" style="background:#141A33;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 8px">
+            <option value="ospi">OSPI (8 MB octal PSRAM, most radios)</option>
+            <option value="qspi">QSPI (2 or 4 MB PSRAM)</option>
+          </select></label>
+      </div>
+    </section>
+
+    <section class="body" id="s3" hidden>
+      <h2>Back up the current firmware</h2>
+      <p class="lead">Recommended the first time: a complete copy of the radio's memory, so you can always go back to the original firmware.</p>
+      <ul class="list">
+        <li>Takes about two minutes. The file (8 MB) is saved to your Downloads folder.</li>
+        <li>To go back later: Advanced options below, "Restore a backup".</li>
+      </ul>
+      <div id="bkProg" hidden><div class="ring" id="bkRing"></div><div class="stage" id="bkStage"></div></div>
+      <div class="actions">
+        <button class="btn primary" id="btnBackup" type="button">Back up now</button>
+        <button class="btn" id="btnSkipBackup" type="button">Skip</button>
+      </div>
+    </section>
+
+    <section class="body" id="s4" hidden>
+      <h2>Install NOVA __VERSION__</h2>
+      <p class="lead">Keep the cable plugged in until the end. It takes about a minute, then you switch the radio off and on.</p>
+      <div class="choice" id="modeChoice">
+        <label class="opt sel" id="optClean"><input type="radio" name="mode" value="clean" checked><div><b>Clean install</b><span>Erases everything on the radio and installs NOVA fresh. Use it the first time, or to start over.</span></div></label>
+        <label class="opt" id="optUpdate"><input type="radio" name="mode" value="update"><div><b>Update NOVA</b><span id="updText">Keeps your stations, favorites, settings and station names.</span></div></label>
+      </div>
+      <div id="inProg" hidden><div class="ring" id="inRing"></div><div class="stage" id="inStage"></div></div>
+      <div class="actions">
+        <button class="btn primary" id="btnInstall" type="button">Install NOVA</button>
+      </div>
+    </section>
+
+    <section class="body" id="s5" hidden>
+      <div class="done-mark"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3DDC97" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2 id="doneTitle">NOVA is installed</h2>
+      <p class="lead" id="doneLead">Everything was written and checked.</p>
+      <div class="restart" id="restartNote"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5EE7FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/></svg>
+        <div><b>Now switch the radio off and on again</b><span>After an install over USB the radio does not always restart by itself and can stay on a dark screen. This is normal: switch it off, then on, and it starts with the NOVA star. If the screen stays dark, unplug the USB cable and switch it on again.</span></div></div>
+      <ul class="list">
+        <li><b>Find stations:</b> on the radio, hold the knob, then Search stations. Or let the editor do it.</li>
+        <li><b>Station names, clock and every setting:</b> open the NOVA Editor in Chrome or Edge and click Connect radio.</li>
+        <li><b>Learn the controls:</b> turn to move, click to choose, hold for the menu.</li>
+      </ul>
+      <div class="actions">
+        <a class="btn primary" id="btnEditor" href="NOVA-Editor.html" style="display:inline-grid;place-items:center">Open the NOVA Editor</a>
+        <button class="btn" id="btnAgain" type="button">Install another radio</button>
+      </div>
+    </section>
+  </div>
+
+  <details class="adv" id="adv">
+    <summary>Advanced options</summary>
+    <div class="row">
+      <button class="btn" id="btnRestore" type="button">Restore a backup…</button>
+      <input type="file" id="restoreFile" accept=".bin" hidden>
+      <button class="btn" id="btnErase" type="button">Erase the whole flash</button>
+      <button class="btn" id="btnShowLog" type="button">Show the technical log</button>
+    </div>
+    <div class="log" id="log" hidden>Ready.</div>
+  </details>
+
+  <div class="cards3">
+    <div class="mini"><b>Open source</b><span>GPL-3.0. Every line of the firmware and of this installer is public.</span></div>
+    <div class="mini"><b>Safe to try</b><span>Back up first and you can always restore the original firmware from this page.</span></div>
+    <div class="mini"><b>Private</b><span>Runs offline in your browser. Your radio talks only to this page.</span></div>
+  </div>
+
+  <footer>NOVA __VERSION__ · Open source radio firmware · <a href="https://github.com/isod89/nova-firmware" target="_blank" rel="noopener">github.com/isod89/nova-firmware</a></footer>
+</div>
+
+<script type="text/plain" id="esptool-b64">__ESPTOOL_B64__</script>
+<script type="application/json" id="fw">__FW_JSON__</script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const VERSION = '__VERSION__';
+const st = { port: null, loader: null, transport: null, chip: '', flash: 0, psram: 0, nova: null, variant: 'ospi', backedUp: false };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function log(t) { const l = $('#log'); l.textContent += '\n' + t; l.scrollTop = l.scrollHeight; }
+function show(n) {
+  for (let i = 1; i <= 5; i++) $('#s' + i).hidden = i !== n;
+  document.querySelectorAll('.step').forEach(e => { const k = +e.dataset.s; e.classList.toggle('now', k === n); e.classList.toggle('done', k < n); e.querySelector('i').textContent = k < n ? '✓' : k; });
+}
+function ring(el, pct) {
+  const r = 70, c = 2 * Math.PI * r, p = Math.max(0, Math.min(100, pct));
+  el.innerHTML = `<svg width="168" height="168" viewBox="0 0 168 168"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5EE7FF"/><stop offset=".52" stop-color="#7C6CFF"/><stop offset="1" stop-color="#E879F9"/></linearGradient></defs>
+    <circle cx="84" cy="84" r="${r}" fill="none" stroke="rgba(140,150,210,.16)" stroke-width="12"/>
+    <circle cx="84" cy="84" r="${r}" fill="none" stroke="url(#rg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - p / 100)}" style="transition:stroke-dashoffset .3s"/></svg><div class="pct">${Math.round(p)}%</div>`;
+}
+function download(name, data) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data], { type: 'application/octet-stream' }));
+  a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+const b64u8 = b => Uint8Array.from(atob(b), c => c.charCodeAt(0));
+let esp = null;
+async function loadEsptool() {
+  if (esp) return esp;
+  const src = new TextDecoder().decode(b64u8($('#esptool-b64').textContent.trim()));
+  esp = await import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+  return esp;
+}
+
+// MD5 (for esptool's write check)
+function md5(u8) {
+  const K = new Uint32Array(64), S = [7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21];
+  for (let i = 0; i < 64; i++) K[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 4294967296);
+  const n = u8.length, total = ((n + 8 >> 6) + 1) * 64, m = new Uint8Array(total);
+  m.set(u8); m[n] = 0x80; const bits = n * 8; const dv = new DataView(m.buffer);
+  dv.setUint32(total - 8, bits >>> 0, true); dv.setUint32(total - 4, Math.floor(bits / 4294967296), true);
+  let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
+  for (let o = 0; o < total; o += 64) {
+    let A = a0, B = b0, C = c0, D = d0;
+    for (let i = 0; i < 64; i++) {
+      let F, g;
+      if (i < 16) { F = (B & C) | (~B & D); g = i; } else if (i < 32) { F = (D & B) | (~D & C); g = (5 * i + 1) % 16; }
+      else if (i < 48) { F = B ^ C ^ D; g = (3 * i + 5) % 16; } else { F = C ^ (B | ~D); g = (7 * i) % 16; }
+      F = (F + A + K[i] + dv.getUint32(o + g * 4, true)) >>> 0;
+      A = D; D = C; C = B;
+      const s = S[(i >> 4) * 4 + (i & 3)];
+      B = (B + ((F << s) | (F >>> (32 - s)))) >>> 0;
+    }
+    a0 = (a0 + A) >>> 0; b0 = (b0 + B) >>> 0; c0 = (c0 + C) >>> 0; d0 = (d0 + D) >>> 0;
+  }
+  return [a0, b0, c0, d0].map(x => [0, 8, 16, 24].map(s => ((x >>> s) & 255).toString(16).padStart(2, '0')).join('')).join('');
+}
+
+// Ask a running NOVA its version, without resetting the radio
+async function askNova(port) {
+  try {
+    await port.open({ baudRate: 115200 });
+    const reader = port.readable.getReader(), writer = port.writable.getWriter();
+    await writer.write(new TextEncoder().encode('NOVA?\nINFO\n'));
+    let text = '';
+    const until = Date.now() + 1500;
+    while (Date.now() < until && !/\nEND/.test(text)) {
+      const r = await Promise.race([reader.read(), sleep(300).then(() => null)]);
+      if (r && r.value) text += new TextDecoder().decode(r.value);
+    }
+    try { await reader.cancel(); } catch {}
+    reader.releaseLock(); writer.releaseLock();
+    await port.close();
+    const m = text.match(/NOVA (\d+\.\d+\.\d+)/), v = text.match(/variant\t(\w+)/);
+    return m ? { version: m[1], variant: v ? v[1] : null } : null;
+  } catch (e) { try { await port.close(); } catch {} return null; }
+}
+
+async function connect() {
+  $('#connErr').hidden = true;
+  const btn = $('#btnConnect'); btn.disabled = true; btn.textContent = 'Connecting…';
+  try {
+    if (!st.port) st.port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
+    st.nova = await askNova(st.port);
+    log(st.nova ? `Running NOVA ${st.nova.version} (${st.nova.variant})` : 'No NOVA answer: another firmware, or install mode');
+    const E = await loadEsptool();
+    st.transport = new E.Transport(st.port, false);
+    st.loader = new E.ESPLoader({ transport: st.transport, baudrate: 921600, romBaudrate: 115200, terminal: { clean() {}, writeLine: log, write: log } });
+    st.chip = await st.loader.main('default_reset');
+    if (!/ESP32-S3/i.test(st.chip)) throw new Error(`This is a ${st.chip}, not an ESP32-S3. NOVA is for the ATS Mini (ESP32-S3 + SI4732).`);
+    const id = await st.loader.readFlashId();
+    st.flash = 2 ** ((id >> 16) & 0xff);
+    const feats = (await st.loader.chip.getChipFeatures(st.loader)).join(',');
+    const pm = feats.match(/PSRAM (\d+)MB/);
+    st.psram = pm ? +pm[1] : 0;
+    st.variant = st.nova?.variant || (st.psram >= 8 ? 'ospi' : st.psram ? 'qspi' : 'ospi');
+    describe(feats);
+    show(2);
+  } catch (e) {
+    log('Error: ' + (e.message || e));
+    try { await st.transport?.disconnect(); } catch {}
+    st.loader = st.transport = null;
+    const nf = e.name === 'NotFoundError';
+    $('#connErr').innerHTML = nf ? 'No port was chosen. Click Connect radio and pick the radio in the list.'
+      : `The radio did not answer (${(e.message || e).toString().slice(0, 120)}). Check the cable, close other programs, then try again. If it still fails, use install mode (link below).`;
+    $('#connErr').hidden = false;
+    if (!nf) $('#helpBoot').hidden = false;
+    st.port = nf ? null : st.port;
+  }
+  btn.disabled = false; btn.textContent = 'Connect radio';
+}
+
+function describe(feats) {
+  $('#fChip').textContent = st.chip.replace(/\s*\(.*\)/, '');
+  $('#fFlash').textContent = st.flash >= 1048576 ? st.flash / 1048576 + ' MB' : 'Unknown';
+  $('#fPsram').textContent = st.psram ? `${st.psram} MB (${st.psram >= 8 ? 'octal' : 'quad'})` : 'Not reported by the chip';
+  $('#fNow').textContent = st.nova ? `NOVA ${st.nova.version}` : 'Another firmware';
+  $('#variantSel').value = st.variant;
+  const sure = !!st.nova?.variant || !!st.psram;
+  $('#variantNote').className = 'note ' + (sure ? 'good' : 'warn');
+  $('#variantNote').innerHTML = sure
+    ? `This radio needs the <b>${st.variant.toUpperCase()}</b> build. It is selected.`
+    : 'The chip does not report its memory type. Most ATS Mini radios use the <b>OSPI</b> build, which is selected. If NOVA shows "Memory not found" after installing, run the installer again with the QSPI build.';
+  if (st.flash && st.flash < 8 * 1048576) {
+    $('#variantNote').className = 'note bad';
+    $('#variantNote').textContent = `This radio has ${st.flash / 1048576} MB of flash. NOVA needs 8 MB or more.`;
+    $('#btnToBackup').disabled = true;
+  }
+  const canUpdate = !!st.nova && st.nova.version >= '1.2.0';
+  $('#optUpdate').classList.toggle('off', !canUpdate);
+  $('#optUpdate').querySelector('input').disabled = !canUpdate;
+  $('#updText').textContent = canUpdate ? `From NOVA ${st.nova.version}. Keeps your stations, favorites, settings and station names.` : 'Only when the radio already runs NOVA.';
+  if (canUpdate) pick('update'); else pick('clean');
+}
+function pick(v) {
+  document.querySelectorAll('input[name=mode]').forEach(i => i.checked = i.value === v);
+  $('#optClean').classList.toggle('sel', v === 'clean'); $('#optUpdate').classList.toggle('sel', v === 'update');
+}
+document.querySelectorAll('input[name=mode]').forEach(i => i.addEventListener('change', () => pick(i.value)));
+
+async function backup() {
+  const btn = $('#btnBackup'); btn.disabled = true; $('#btnSkipBackup').disabled = true;
+  $('#bkProg').hidden = false; ring($('#bkRing'), 0); $('#bkStage').textContent = 'Reading the radio\'s memory…';
+  try {
+    const size = st.flash || 8 * 1048576;
+    const data = await st.loader.readFlash(0, size, (pkt, got, total) => { ring($('#bkRing'), got / total * 100); });
+    const d = new Date(), stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`;
+    download(`ats-mini-backup-${stamp}.bin`, data);
+    st.backedUp = true;
+    $('#bkStage').textContent = 'Saved to your Downloads folder.';
+    await sleep(900);
+    show(4);
+  } catch (e) {
+    log('Backup error: ' + (e.message || e));
+    $('#bkStage').textContent = 'The backup did not finish. Try again, or skip it.';
+  }
+  btn.disabled = false; $('#btnSkipBackup').disabled = false;
+}
+
+function parts(variant, mode) {
+  const fw = JSON.parse($('#fw').textContent)[variant];
+  const u = k => b64u8(fw[k]);
+  if (mode === 'update') return [{ data: u('app'), address: 0x10000 }];
+  return [{ data: u('bootloader'), address: 0x0 }, { data: u('partitions'), address: 0x8000 }, { data: u('boot_app0'), address: 0xe000 }, { data: u('app'), address: 0x10000 }];
+}
+
+async function write(fileArray, eraseAll, ringEl, stageEl, label) {
+  const total = fileArray.reduce((s, f) => s + f.data.length, 0);
+  let doneBefore = 0, lastIdx = 0;
+  if (eraseAll) stageEl.textContent = 'Erasing the radio\'s memory (up to 40 s)…';
+  await st.loader.writeFlash({
+    fileArray, flashMode: 'keep', flashFreq: 'keep', flashSize: 'keep', eraseAll, compress: true,
+    calculateMD5Hash: img => md5(img instanceof Uint8Array ? img : Uint8Array.from(img, c => c.charCodeAt(0))),
+    reportProgress: (idx, w, t) => {
+      if (idx !== lastIdx) { doneBefore += fileArray[lastIdx].data.length; lastIdx = idx; }
+      const frac = (doneBefore + fileArray[idx].data.length * (t ? w / t : 0)) / total;
+      ring(ringEl, frac * 100);
+      stageEl.textContent = `${label}… ${Math.round(frac * 100)}%`;
+    },
+  });
+  ring(ringEl, 100); stageEl.textContent = 'Checked. Finishing…';
+  await st.loader.after('hard_reset');
+  try { await st.transport.disconnect(); } catch {}
+  st.loader = null; st.transport = null;
+}
+
+async function install() {
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  const variant = $('#variantSel').value;
+  if (mode === 'clean' && !st.backedUp && !st.nova && !confirm('No backup was made. Without one you cannot go back to the original firmware. Install anyway?')) return;
+  const btn = $('#btnInstall'); btn.disabled = true;
+  $('#modeChoice').hidden = true; $('#inProg').hidden = false; ring($('#inRing'), 0);
+  try {
+    await write(parts(variant, mode), mode === 'clean', $('#inRing'), $('#inStage'), 'Installing NOVA ' + VERSION);
+    $('#doneTitle').textContent = mode === 'update' ? `NOVA updated to ${VERSION}` : 'NOVA is installed';
+    $('#doneLead').textContent = mode === 'update' ? 'Everything was written and checked. Your stations and settings are kept.' : 'Everything was written and checked. The radio was erased, so start with a station search once it is on.';
+    show(5);
+  } catch (e) {
+    log('Install error: ' + (e.message || e));
+    $('#inStage').innerHTML = `<span style="color:var(--bad)">The install did not finish. The radio is safe: reconnect it and install again.</span>`;
+    $('#modeChoice').hidden = false;
+    $('#btnInstall').textContent = 'Connect and try again';
+    st.port = st.port; st.loader = null;
+    btn.onclick = () => { btn.onclick = null; location.reload(); };
+  }
+  btn.disabled = false;
+}
+
+async function ensureLoader() {
+  if (st.loader) return true;
+  await connect();
+  return !!st.loader;
+}
+async function restore(file) {
+  const u8 = new Uint8Array(await file.arrayBuffer());
+  if (u8[0] !== 0xE9 || u8.length < 1048576) return alert('This does not look like a full backup made by this installer (an 8 MB .bin file).');
+  if (!confirm(`Write ${file.name} (${(u8.length / 1048576).toFixed(1)} MB) back to the radio? Everything on it is replaced.`)) return;
+  if (!await ensureLoader()) return;
+  show(4); $('#modeChoice').hidden = true; $('#inProg').hidden = false; $('#btnInstall').hidden = true;
+  try {
+    await write([{ data: u8, address: 0 }], false, $('#inRing'), $('#inStage'), 'Restoring the backup');
+    $('#doneTitle').textContent = 'Backup restored';
+    $('#doneLead').textContent = 'The radio has the firmware it had when you made the backup again.';
+    $('#btnEditor').hidden = true;
+    show(5);
+  } catch (e) { log('Restore error: ' + (e.message || e)); $('#inStage').textContent = 'The restore did not finish. Reconnect and try again.'; }
+}
+
+if (!('serial' in navigator)) { $('#noSerial').hidden = false; $('#btnConnect').disabled = true; }
+$('#btnConnect').addEventListener('click', connect);
+$('#btnHelpBoot').addEventListener('click', () => $('#helpBoot').hidden = !$('#helpBoot').hidden);
+$('#btnToBackup').addEventListener('click', () => show(st.nova ? 4 : 3));
+$('#btnBackup').addEventListener('click', backup);
+$('#btnSkipBackup').addEventListener('click', () => show(4));
+$('#btnInstall').addEventListener('click', install);
+$('#btnAgain').addEventListener('click', () => location.reload());
+$('#btnRestore').addEventListener('click', () => $('#restoreFile').click());
+$('#restoreFile').addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; if (f) restore(f); });
+$('#btnErase').addEventListener('click', async () => {
+  if (!confirm('Erase all of the radio\'s memory? It will not work until you install a firmware.')) return;
+  if (!await ensureLoader()) return;
+  try { log('Erasing…'); await st.loader.eraseFlash(); log('Erased. Install NOVA or restore a backup.'); alert('The flash is erased. Install NOVA or restore a backup now.'); show(4); }
+  catch (e) { log('Erase error: ' + (e.message || e)); }
+});
+$('#btnShowLog').addEventListener('click', () => $('#log').hidden = !$('#log').hidden);
+</script>
+</body>
+</html>

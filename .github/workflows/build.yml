@@ -1,0 +1,90 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up arduino-cli
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install the ESP32 core and libraries
+        run: |
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32@3.3.12
+          arduino-cli lib install "LovyanGFX@1.2.33" "PU2CLR SI4735@2.1.8"
+
+      - name: Build firmware, editor and installer
+        run: tools/make-release.sh
+
+      - name: Upload the build
+        uses: actions/upload-artifact@v4
+        with:
+          name: nova-build
+          path: |
+            dist/NOVA-*.zip
+            dist/NOVA-*.zip.sha256
+            dist/NOVA-Installer.html
+            dist/NOVA-Editor.html
+
+      - name: Assemble the website
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+        run: |
+          mkdir -p _site/images
+          cp site/* _site/
+          cp dist/NOVA-Installer.html dist/NOVA-Editor.html _site/
+          cp -r docs/images/brand docs/images/screens docs/images/web _site/images/
+
+      - name: Upload the website
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/NOVA-*.zip
+            dist/NOVA-*.zip.sha256
+            dist/NOVA-Installer.html
+          body_path: docs/release-notes.md
+
+      # Fixes to the installer, editor or docs on main also refresh the files of the
+      # current release, as long as the firmware version has not changed
+      - name: Refresh the current release files
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER="$(sed -n 's/#define NOVA_VERSION *"\(.*\)"/\1/p' firmware/nova/Nova.h)"
+          if gh release view "v$VER" > /dev/null 2>&1; then
+            gh release upload "v$VER" "dist/NOVA-$VER.zip" "dist/NOVA-$VER.zip.sha256" dist/NOVA-Installer.html --clobber
+          fi
+
+  pages:
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

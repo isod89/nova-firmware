@@ -1,0 +1,15 @@
+# Build output
+/build/
+/dist/
+/tests/simulator/obj/
+/tests/simulator/out/
+/tests/simulator/nsim
+/scripts/tools/
+/backups/
+*.o
+*.elf
+*.map
+__pycache__/
+.DS_Store
+Thumbs.db
+/firmware/nova/build/

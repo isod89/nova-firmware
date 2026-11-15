@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA - open source firmware for the ATS Mini</title>
+<meta name="description" content="A modern, complete and open source firmware for the ATS Mini pocket receiver (ESP32-S3 + SI4732). Install it from your browser in one minute.">
+<meta property="og:title" content="NOVA - open source radio firmware">
+<meta property="og:description" content="A modern, complete and open source firmware for the ATS Mini pocket receiver.">
+<meta property="og:image" content="images/brand/nova-social.png">
+<link rel="icon" href="images/brand/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #070912; --text: #F2F4FF; --dim: #8A93B5; --line: rgba(140,150,210,.16); --grad: linear-gradient(135deg, #5EE7FF 0%, #7C6CFF 52%, #E879F9 100%); --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.6 var(--font); color: var(--text); background: radial-gradient(1400px 800px at 50% -15%, #1D2556 0%, var(--bg) 62%) fixed, var(--bg); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+nav { display: flex; align-items: center; justify-content: space-between; padding: 24px 0; }
+.brand { display: flex; gap: 12px; align-items: center; font-weight: 700; letter-spacing: .2em; font-size: 20px; }
+.brand img { width: 40px; height: 40px; }
+nav .links { display: flex; gap: 26px; color: var(--dim); font-weight: 500; font-size: 15px; }
+nav .links a:hover { color: var(--text); }
+.hero { text-align: center; padding: 56px 0 34px; }
+.hero h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.04; letter-spacing: -.035em; margin: 0 0 18px; font-weight: 800; }
+.hero h1 span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { color: var(--dim); font-size: 19px; max-width: 680px; margin: 0 auto 32px; }
+.cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn { height: 54px; padding: 0 28px; border-radius: 16px; display: inline-flex; align-items: center; font-weight: 600; border: 1px solid var(--line); background: rgba(255,255,255,.04); transition: transform .15s, box-shadow .2s; }
+.btn:hover { transform: translateY(-1px); }
+.btn.primary { background: var(--grad); color: #0A0D1A; border: 0; box-shadow: 0 14px 40px rgba(124,108,255,.4); }
+.shot { margin: 44px auto 0; max-width: 1080px; border-radius: 22px; overflow: hidden; box-shadow: 0 40px 120px rgba(0,0,0,.6); border: 1px solid var(--line); }
+.shot img { display: block; width: 100%; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 70px 0; }
+.card { border: 1px solid var(--line); border-radius: 20px; padding: 24px; background: rgba(22,28,54,.55); }
+.card h3 { margin: 0 0 6px; font-size: 18px; }
+.card p { margin: 0; color: var(--dim); font-size: 15px; }
+.card .dot { width: 36px; height: 36px; border-radius: 11px; background: var(--grad); margin-bottom: 16px; opacity: .9; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin: 80px 0; }
+.split h2 { font-size: 34px; letter-spacing: -.02em; margin: 0 0 12px; }
+.split p { color: var(--dim); }
+.split img { width: 100%; border-radius: 18px; border: 1px solid var(--line); }
+footer { border-top: 1px solid var(--line); padding: 30px 0 50px; color: var(--dim); font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 860px) { .grid, .split { grid-template-columns: 1fr; } nav .links { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="./"><img src="images/brand/nova-icon.svg" alt="">NOVA</a>
+    <div class="links">
+      <a href="NOVA-Installer.html">Install</a>
+      <a href="NOVA-Editor.html">Editor</a>
+      <a href="https://github.com/isod89/nova-firmware/tree/main/docs">Docs</a>
+      <a href="https://github.com/isod89/nova-firmware">GitHub</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Your ATS Mini,<br><span>reimagined.</span></h1>
+    <p>NOVA is a modern, complete and open source firmware for the ATS Mini pocket receiver. Install it from your browser in one minute, and go back whenever you want.</p>
+    <div class="cta">
+      <a class="btn primary" href="NOVA-Installer.html">Install NOVA</a>
+      <a class="btn" href="https://github.com/isod89/nova-firmware/releases/latest">Download</a>
+      <a class="btn" href="https://github.com/isod89/nova-firmware">Source code</a>
+    </div>
+    <div class="shot"><img src="images/screens/hero.png" alt="NOVA screens"></div>
+  </section>
+
+  <section class="grid">
+    <div class="card"><div class="dot"></div><h3>Every band</h3><p>FM, AM, longwave and shortwave, SSB and CW, with a scanner that finds every station and names them with RDS and the EiBi schedule.</p></div>
+    <div class="card"><div class="dot"></div><h3>Three apps</h3><p>A professional Ghost Box, a Noise Hunter that finds what spoils your reception, and a Storm Detector that hears lightning.</p></div>
+    <div class="card"><div class="dot"></div><h3>Made to look good</h3><p>19 themes, an animated boot screen, smooth fonts and six visualizers driven by the receiver's own measurements.</p></div>
+    <div class="card"><div class="dot"></div><h3>A real editor</h3><p>Stations, names, settings, backups, updates and app control panels, in a web page that works offline over USB.</p></div>
+    <div class="card"><div class="dot"></div><h3>Safe to try</h3><p>The installer backs up the original firmware first and restores it in a minute.</p></div>
+    <div class="card"><div class="dot"></div><h3>Free, forever</h3><p>GPL-3.0. Every line of the firmware, the editor and the installer is public.</p></div>
+  </section>
+
+  <section class="split">
+    <div><h2>Ghost Box, done properly</h2><p>Fast sweeps from 30 ms, six sweep orders, clusters around stations, RF trigger, catch, answer windows and blind sessions. Every frequency is logged, and the editor records, shows a spectrogram, checks each response against the stations on the air, and prints a report.</p></div>
+    <img src="images/screens/ghost-box-collage.png" alt="Ghost Box screens">
+  </section>
+
+  <section class="split">
+    <img src="images/web/editor-radio.png" alt="NOVA Editor">
+    <div><h2>A real control panel</h2><p>The NOVA Editor runs in your browser, offline, over the USB cable: rename stations, change every setting, update station names over Wi-Fi, back up, update, and drive the three apps with live charts. <a href="NOVA-Editor.html" style="color:#5EE7FF">Try the demo</a>.</p></div>
+  </section>
+
+  <section class="split">
+    <div><h2>Install in one minute</h2><p>NOVA Installer reads your radio, picks the right build, saves the original firmware and installs NOVA, with every part checked. Going back is one click. <a href="https://github.com/isod89/nova-firmware/tree/main/docs/tutorials" style="color:#5EE7FF">Read the tutorials</a>.</p></div>
+    <img src="images/web/installer-2-radio.png" alt="NOVA Installer">
+  </section>
+
+  <section class="split">
+    <img src="images/screens/themes-collage.png" alt="19 themes">
+    <div><h2>19 themes</h2><p>From the deep blue NOVA theme to Night red for the observatory, Retro LCD, Paper, Nord, Dracula and a high contrast theme for bright sunlight.</p></div>
+  </section>
+
+  <footer>
+    <span>NOVA · open source radio firmware · GPL-3.0</span>
+    <span>Not affiliated with the makers or sellers of the ATS Mini.</span>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+name: Bug report
+description: Something does not work as described
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping make NOVA better. Please fill in what you can; photos of the radio's screen help a lot.
+  - type: input
+    id: version
+    attributes:
+      label: NOVA version
+      description: Settings > About > Firmware
+      placeholder: "2.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: radio
+    attributes:
+      label: Radio
+      options: [ATS Mini V4, ATS Mini V3, Other ESP32-S3 + SI4732 radio]
+    validations:
+      required: true
+  - type: dropdown
+    id: build
+    attributes:
+      label: Firmware build
+      options: [OSPI, QSPI, I don't know]
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Hold the knob\n2. Apps > Ghost Box\n3. ..."
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots, photos or logs

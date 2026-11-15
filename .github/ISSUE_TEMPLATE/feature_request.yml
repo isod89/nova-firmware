@@ -1,0 +1,17 @@
+name: Feature request
+description: An idea for NOVA
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like NOVA to do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why would it help you?
+  - type: markdown
+    attributes:
+      value: "Good to know: the ATS Mini's processor has no audio path to the speaker, so features that need to play or record sound on the radio itself are not possible without hardware changes."
